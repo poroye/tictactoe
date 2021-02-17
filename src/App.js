@@ -19,8 +19,8 @@ const App = () => {
   const handleClick = (i) => {
     if (settingphase === true){
       jumpTo(0);
-      setStartWord("Start");
-      setChangeWord("");
+      setStartWord("");
+      setChangeWord("Change");
       setSettingphase(!settingphase)
     }
     const historyPoint = history.slice(0, stepNumber + 1);
