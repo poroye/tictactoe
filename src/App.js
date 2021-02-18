@@ -13,6 +13,7 @@ const App = () => {
   const [stepNumber, setStepNumber] = useState(0);
   const [xIsNext, setXisNext] = useState(true);
   const winner = calculateWinner(history[stepNumber],size,settingphase);
+  const [maxSlide,setMaxSlide] = useState(stepNumber);
   const xO = xIsNext ? "X" : "O";
 
 
@@ -36,6 +37,7 @@ const App = () => {
     setHistory([...historyPoint, squares]);
     setStepNumber(historyPoint.length);
     setXisNext(!xIsNext);
+    setMaxSlide(stepNumber);
     
   };
 
@@ -46,18 +48,23 @@ const App = () => {
     }
   };
 
-
-  const renderMoves = () =>
-    history.map((_step, move) => {
-      if(settingphase === false && stepNumber > 0){
-      const destination = move ? `Go to move #${move}` : "ReStart";
+  const renderMoves = () => {
+    if(settingphase === false && stepNumber > 0){
       return (
-        <li key={move}>
-          <button className="button" onClick={() => jumpTo(move)}>{destination}</button>
-        </li>
+        <input type="range" min={1} max={maxSlide} value={stepNumber} class="slider" 
+          onChange={ e => jumpTo(e.target.value) } ></input>
       );
       }
-    });
+  }
+    
+  const renderLevels = () => {
+    if (settingphase) {
+      return (
+        <input type="range" min={2} max={maxSize} value={size} class="slider" 
+          onChange={ e => setSize(e.target.value) } ></input>
+      );
+    }
+  }
 
   const startGame = () => {
     if (settingphase === true) {
@@ -74,21 +81,16 @@ const App = () => {
 
   return (<>
       <div className="select-container">
-        {settingphase && <input type="range" min={2} max={maxSize} value={size} class="slider" 
-          onChange={ e => setSize(e.target.value) } ></input>
-          }
+        {renderLevels()}
         {settingphase && <h3>slide to change size win with 2 in 2x2,3 in 3x3,4 in 4x4 to 20x20</h3>}
         <button className="button" onClick={() => startGame()}>{changeWord} size {size}x{size} {startWord}</button>
       </div>
       <Board squares={history[stepNumber]} size={size} onClick={handleClick}> </Board>
       <div className="info-wrapper">
-        <div>
-          <h3>History</h3>
-          {renderMoves()}
-        </div>
-        <h3>{winner ? "Winner: " + winner : "Next Player: " + xO}</h3>
+        <h3>History</h3>
+        <h2>{winner ? "Winner: " + winner : "Next Player: " + xO}</h2>  
+        {renderMoves()}
       </div>
-
     </>);
 }
 export default App;
